@@ -1,0 +1,108 @@
+{
+  "name": "Donasi Simulasi ke Sheets dan Telegram",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "triggerCount": 1,
+  "updatedAt": "2026-11-01T00:00:00.000Z",
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "donasi-simulasi"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "donasi-simulasi",
+        "responseMode": "lastNode",
+        "options": {
+          "responseData": "json",
+          "responseCode": 200
+        },
+        "authentication": "headerAuth",
+        "headerAuth": {
+          "name": "x-webhook-secret",
+          "value": "{{ $env.N8N_WEBHOOK_SECRET }}"
+        }
+      },
+      "id": "webhook-donasi",
+      "name": "Webhook Donasi",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "sheetId": "{{ $env.GOOGLE_SHEET_ID }}",
+        "range": "Donasi!A1:K1",
+        "valueInputOption": "RAW",
+        "dataMode": "autoMapInputData",
+        "options": {},
+        "fields": [
+          "kode_donasi",
+          "waktu",
+          "nama",
+          "anonim",
+          "no_wa",
+          "program",
+          "nominal",
+          "metode",
+          "pesan",
+          "status"
+        ]
+      },
+      "id": "google-sheets-append",
+      "name": "Google Sheets - Append Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        260,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "{{ $env.TELEGRAM_ADMIN_CHAT_ID }}",
+        "text": "=\n💰 Donasi baru\nKode: {{ $json.kode_donasi }}\nNama: {{ $json.nama }}\nNominal: Rp {{ $json.nominal.toLocaleString('id-ID') }}\nProgram: {{ $json.program }}\nMetode: {{ $json.metode }}\nStatus: {{ $json.status }}\nWA: {{ $json.no_wa ? 'https://wa.me/' + $json.no_wa : '-' }}",
+        "parseMode": "" 
+      },
+      "id": "telegram-send",
+      "name": "Telegram - Send Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        520,
+        220
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Donasi": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets - Append Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets - Append Row": {
+      "main": [
+        [
+          {
+            "node": "Telegram - Send Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
