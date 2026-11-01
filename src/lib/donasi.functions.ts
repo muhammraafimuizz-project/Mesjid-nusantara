@@ -1,44 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
-import fs from "node:fs";
-import path from "node:path";
 
 import { buatKodeDonasi, parseDonasi, toPayload, type DonasiInput, type DonasiPayload } from "./donasi";
 
-const serverEnvLoaded = new Set<string>();
-
-function loadFallbackEnvFile(): void {
-  if (typeof process === "undefined") return;
-
-  const candidates = [
-    path.resolve(process.cwd(), ".env"),
-    path.resolve(process.cwd(), "..", ".env"),
-    path.resolve(process.cwd(), "..", ".env.local"),
-  ];
-
-  for (const filePath of candidates) {
-    if (serverEnvLoaded.has(filePath) || !fs.existsSync(filePath)) continue;
-
-    const content = fs.readFileSync(filePath, "utf8");
-    for (const line of content.split(/\r?\n/)) {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) continue;
-
-      const separator = trimmed.indexOf("=");
-      const key = trimmed.slice(0, separator).trim();
-      const value = trimmed.slice(separator + 1).trim();
-
-      if (key && !Object.prototype.hasOwnProperty.call(process.env, key)) {
-        process.env[key] = value.replace(/^['"]|['"]$/g, "");
-      }
-    }
-
-    serverEnvLoaded.add(filePath);
-  }
-}
-
 function getServerEnv(name: string): string | undefined {
-  loadFallbackEnvFile();
-
   const value = process.env[name] ?? (typeof import.meta !== "undefined" ? (import.meta.env as Record<string, string | undefined>)?.[name] : undefined);
 
   return typeof value === "string" ? value.trim() : undefined;
