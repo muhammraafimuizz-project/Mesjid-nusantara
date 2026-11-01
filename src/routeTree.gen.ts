@@ -12,9 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BeritaRouteImport } from './routes/berita'
 import { Route as DonasiRouteImport } from './routes/donasi'
-import { Route as GaleriRouteImport } from './routes/galeri'
 import { Route as KontakRouteImport } from './routes/kontak'
 import { Route as TentangRouteImport } from './routes/tentang'
+import { Route as GaleriIndexRouteImport } from './routes/galeri.index'
+import { Route as GaleriSlugRouteImport } from './routes/galeri.$slug'
 import { Route as ProgramIndexRouteImport } from './routes/program.index'
 import { Route as ProgramSlugRouteImport } from './routes/program.$slug'
 
@@ -33,11 +34,6 @@ const DonasiRoute = DonasiRouteImport.update({
   path: '/donasi',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GaleriRoute = GaleriRouteImport.update({
-  id: '/galeri',
-  path: '/galeri',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const KontakRoute = KontakRouteImport.update({
   id: '/kontak',
   path: '/kontak',
@@ -46,6 +42,16 @@ const KontakRoute = KontakRouteImport.update({
 const TentangRoute = TentangRouteImport.update({
   id: '/tentang',
   path: '/tentang',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GaleriIndexRoute = GaleriIndexRouteImport.update({
+  id: '/galeri/',
+  path: '/galeri/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GaleriSlugRoute = GaleriSlugRouteImport.update({
+  id: '/galeri/$slug',
+  path: '/galeri/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProgramIndexRoute = ProgramIndexRouteImport.update({
@@ -63,20 +69,22 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/berita': typeof BeritaRoute
   '/donasi': typeof DonasiRoute
-  '/galeri': typeof GaleriRoute
   '/kontak': typeof KontakRoute
   '/tentang': typeof TentangRoute
+  '/galeri/$slug': typeof GaleriSlugRoute
   '/program/$slug': typeof ProgramSlugRoute
+  '/galeri/': typeof GaleriIndexRoute
   '/program/': typeof ProgramIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/berita': typeof BeritaRoute
   '/donasi': typeof DonasiRoute
-  '/galeri': typeof GaleriRoute
   '/kontak': typeof KontakRoute
   '/tentang': typeof TentangRoute
+  '/galeri/$slug': typeof GaleriSlugRoute
   '/program/$slug': typeof ProgramSlugRoute
+  '/galeri': typeof GaleriIndexRoute
   '/program': typeof ProgramIndexRoute
 }
 export interface FileRoutesById {
@@ -84,10 +92,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/berita': typeof BeritaRoute
   '/donasi': typeof DonasiRoute
-  '/galeri': typeof GaleriRoute
   '/kontak': typeof KontakRoute
   '/tentang': typeof TentangRoute
+  '/galeri/$slug': typeof GaleriSlugRoute
   '/program/$slug': typeof ProgramSlugRoute
+  '/galeri/': typeof GaleriIndexRoute
   '/program/': typeof ProgramIndexRoute
 }
 export interface FileRouteTypes {
@@ -96,30 +105,33 @@ export interface FileRouteTypes {
     | '/'
     | '/berita'
     | '/donasi'
-    | '/galeri'
     | '/kontak'
     | '/tentang'
+    | '/galeri/$slug'
     | '/program/$slug'
+    | '/galeri/'
     | '/program/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/berita'
     | '/donasi'
-    | '/galeri'
     | '/kontak'
     | '/tentang'
+    | '/galeri/$slug'
     | '/program/$slug'
+    | '/galeri'
     | '/program'
   id:
     | '__root__'
     | '/'
     | '/berita'
     | '/donasi'
-    | '/galeri'
     | '/kontak'
     | '/tentang'
+    | '/galeri/$slug'
     | '/program/$slug'
+    | '/galeri/'
     | '/program/'
   fileRoutesById: FileRoutesById
 }
@@ -127,10 +139,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BeritaRoute: typeof BeritaRoute
   DonasiRoute: typeof DonasiRoute
-  GaleriRoute: typeof GaleriRoute
   KontakRoute: typeof KontakRoute
   TentangRoute: typeof TentangRoute
+  GaleriSlugRoute: typeof GaleriSlugRoute
   ProgramSlugRoute: typeof ProgramSlugRoute
+  GaleriIndexRoute: typeof GaleriIndexRoute
   ProgramIndexRoute: typeof ProgramIndexRoute
 }
 
@@ -157,13 +170,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DonasiRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/galeri': {
-      id: '/galeri'
-      path: '/galeri'
-      fullPath: '/galeri'
-      preLoaderRoute: typeof GaleriRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/kontak': {
       id: '/kontak'
       path: '/kontak'
@@ -176,6 +182,20 @@ declare module '@tanstack/react-router' {
       path: '/tentang'
       fullPath: '/tentang'
       preLoaderRoute: typeof TentangRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/galeri/': {
+      id: '/galeri/'
+      path: '/galeri'
+      fullPath: '/galeri/'
+      preLoaderRoute: typeof GaleriIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/galeri/$slug': {
+      id: '/galeri/$slug'
+      path: '/galeri/$slug'
+      fullPath: '/galeri/$slug'
+      preLoaderRoute: typeof GaleriSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/program/': {
@@ -199,10 +219,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BeritaRoute: BeritaRoute,
   DonasiRoute: DonasiRoute,
-  GaleriRoute: GaleriRoute,
   KontakRoute: KontakRoute,
   TentangRoute: TentangRoute,
+  GaleriSlugRoute: GaleriSlugRoute,
   ProgramSlugRoute: ProgramSlugRoute,
+  GaleriIndexRoute: GaleriIndexRoute,
   ProgramIndexRoute: ProgramIndexRoute,
 }
 export const routeTree = rootRouteImport

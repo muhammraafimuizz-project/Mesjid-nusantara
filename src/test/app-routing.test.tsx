@@ -14,4 +14,11 @@ describe("App routing", () => {
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
+
+  it("matches the galeri list and detail routes", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+
+    expect(router.matchRoutes("/galeri")?.at(-1)?.routeId).toBe("/galeri/");
+    expect(router.matchRoutes("/galeri/pembangunan")?.at(-1)?.routeId).toBe("/galeri/$slug");
+  });
 });
